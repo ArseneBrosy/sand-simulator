@@ -21,3 +21,8 @@ canvas {
     border: 1px solid black;
     image-rendering: pixelated;
 }
+
+#fps {
+    width: 100px;
+    padding: 20px;
+}
