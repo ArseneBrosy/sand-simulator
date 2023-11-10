@@ -16,6 +16,7 @@ let mouseY = 0;
 let canvasMouseX = 0;
 let canvasMouseY = 0;
 let mouseButtonPressed = -1;
+let penRadius = 10;
 
 // world
 let world = [];
@@ -59,10 +60,22 @@ setInterval(() => {
   //region BUILD
   switch (mouseButtonPressed) {
     case 0:
-      world[canvasMouseY][canvasMouseX] = materials[2];
+      for (let x = canvasMouseX - penRadius; x <= canvasMouseX + penRadius; x++) {
+        for (let y = canvasMouseY - penRadius; y <= canvasMouseY + penRadius; y++) {
+          try {
+            world[y][x] = materials[2];
+          } catch {}
+        }
+      }
       break;
     case 2:
-      world[canvasMouseY][canvasMouseX] = materials[0];
+      for (let x = canvasMouseX - penRadius; x <= canvasMouseX + penRadius; x++) {
+        for (let y = canvasMouseY - penRadius; y <= canvasMouseY + penRadius; y++) {
+          try {
+            world[y][x] = materials[0];
+          } catch {}
+        }
+      }
       break;
   }
   //endregion
