@@ -37,10 +37,17 @@ let materials = [
   },
   {
     material: 2,
-    tags: [],
+    tags: ["sandy"],
     red: 223,
     green: 183,
     blue: 118
+  },
+  {
+    material: 3,
+    tags: ["liquid", "search-left"],
+    red: 97,
+    green: 137,
+    blue: 213
   }
 ];
 
@@ -133,8 +140,8 @@ function step() {
   for (let y = 0; y < canvas.height; y++) {
     for (let x = 0; x < canvas.width; x++) {
       if (!world[y][x].tags.includes("no-physics") && !world[y][x].tags.includes("tamp-no-physics")) {
-        // sand
-        if (world[y][x].material === 2 && y < canvas.height - 1) {
+        // sandy materials
+        if (world[y][x].tags.includes("sandy") && y < canvas.height - 1) {
           if (world[y + 1][x].material === 0) {
             world[y + 1][x] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x].tags.push("tamp-no-physics");
@@ -165,6 +172,57 @@ function step() {
               green: 255,
               blue: 255
             };
+          }
+        }
+        // liquids
+        if (world[y][x].tags.includes("liquid")) {
+          if (y < canvas.height - 1 && world[y + 1][x].material === 0) {
+            // false down
+            world[y + 1][x] = JSON.parse(JSON.stringify(world[y][x]));
+            world[y + 1][x].tags.push("tamp-no-physics");
+            world[y][x] = {
+              material: 0,
+              tags: ["no-physics"],
+              red: 255,
+              green: 255,
+              blue: 255
+            };
+          } else if (world[y][x].tags.includes("search-left")) {
+            // left movement
+            if (x > 0 && world[y][x - 1].material === 0) {
+              // search hole
+              world[y][x - 1] = JSON.parse(JSON.stringify(world[y][x]));
+              world[y][x - 1].tags.push("tamp-no-physics");
+              world[y][x] = {
+                material: 0,
+                tags: ["no-physics"],
+                red: 255,
+                green: 255,
+                blue: 255
+              };
+            } else {
+              // change direction
+              world[y][x].tags.push("search-right");
+              world[y][x].tags.splice(world[y][x].tags.indexOf("search-left"), 1);
+            }
+          } else if (world[y][x].tags.includes("search-right")) {
+            // right movement
+            if (x < canvas.width - 1 && world[y][x + 1].material === 0) {
+              // search hole
+              world[y][x + 1] = JSON.parse(JSON.stringify(world[y][x]));
+              world[y][x + 1].tags.push("tamp-no-physics");
+              world[y][x] = {
+                material: 0,
+                tags: ["no-physics"],
+                red: 255,
+                green: 255,
+                blue: 255
+              };
+            } else {
+              // change direction
+              world[y][x].tags.push("search-left");
+              world[y][x].tags.splice(world[y][x].tags.indexOf("search-right"), 1);
+            }
           }
         }
       }
