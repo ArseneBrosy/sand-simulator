@@ -33,6 +33,7 @@ canvas {
     aspect-ratio: 1;
     position: absolute;
     padding: 5px;
+    user-select: none;
 }
 
 #sidebar {

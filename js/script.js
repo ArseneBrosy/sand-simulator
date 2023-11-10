@@ -62,6 +62,11 @@ for (let y = 0; y < canvas.height; y++) {
 //endregion
 
 //region FUNCTIONS
+function selectMaterial(material) {
+  document.getElementById(`button-material-${selectedMaterial}`).classList.remove("selected");
+  selectedMaterial = material;
+  document.getElementById(`button-material-${selectedMaterial}`).classList.add("selected");
+}
 //endregion
 
 setInterval(() => {
@@ -183,15 +188,15 @@ function draw() {
   ctx.putImageData(imageData, 0, 0);
 }
 
-canvas.addEventListener("mousemove", (e) => {
+document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
 
-canvas.addEventListener("mousedown", (e) => {
+document.addEventListener("mousedown", (e) => {
   mouseButtonPressed = e.button;
 });
 
-canvas.addEventListener("mouseup", (e) => {
+document.addEventListener("mouseup", (e) => {
   mouseButtonPressed = -1;
 });
