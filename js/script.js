@@ -3,35 +3,38 @@
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
 
-//#region CONSTANTES
-//#endregion
+//region CONSTANTES
+//endregion
 
-//#region VARIABLES
+//region VARIABLES
 // souris
 let mouseX = 0;
 let mouseY = 0;
-//#endregion
+//endregion
 
-//#region FUNCTIONS
-function Distance(x1, y1, x2, y2) {
-  return Math.sqrt(Math.abs(x1 - x2)**2 + Math.abs(y1 - y2)**2);
-}
-//#endregion
+//region FUNCTIONS
+//endregion
 
 function loop() {
-  canvas.width = 1000;
-  canvas.height = 1000;
+  canvas.width = 10;
+  canvas.height = 10;
 
-  //#region DRAW
+  //region MOUSE
+  let canvasRect = canvas.getBoundingClientRect();
+  let canvasMouseX = Math.floor((mouseX - canvasRect.left) * canvas.width / canvasRect.width);
+  let canvasMouseY = Math.floor((mouseY - canvasRect.top) * canvas.height / canvasRect.height);
+  //endregion
+
+  //region DRAW
   // clear
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "red";
-  ctx.strokeStyle = "red";
-  //#endregion
+  ctx.fillStyle = "black";
+  ctx.fillRect(canvasMouseX, canvasMouseY, 1, 1);
+  //endregion
   requestAnimationFrame(loop);
 }
 
-document.addEventListener("mousemove", (e) => {
+canvas.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
