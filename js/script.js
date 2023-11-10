@@ -2,10 +2,11 @@
 // by Arsène Brosy
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
-canvas.width = 10;
-canvas.height = 10;
+canvas.width = 100;
+canvas.height = 100;
 
 //region CONSTANTES
+const SAND_FRICTION = .9;
 //endregion
 
 //region VARIABLES
@@ -37,6 +38,10 @@ let materials = [
   {
     material: 1,
     tags: ["collider"]
+  },
+  {
+    material: 2,
+    tags: ["collider"]
   }
 ];
 //endregion
@@ -44,7 +49,7 @@ let materials = [
 //region FUNCTIONS
 //endregion
 
-function loop() {
+setInterval(() => {
   //region MOUSE
   let canvasRect = canvas.getBoundingClientRect();
   canvasMouseX = Math.floor((mouseX - canvasRect.left) * canvas.width / canvasRect.width);
@@ -54,7 +59,7 @@ function loop() {
   //region BUILD
   switch (mouseButtonPressed) {
     case 0:
-      world[canvasMouseY][canvasMouseX] = materials[1];
+      world[canvasMouseY][canvasMouseX] = materials[2];
       break;
     case 2:
       world[canvasMouseY][canvasMouseX] = materials[0];
@@ -62,7 +67,39 @@ function loop() {
   }
   //endregion
 
-  //region DRAW
+  draw()
+}, 0);
+
+setInterval(() => {
+  step();
+  //draw();
+}, 0);
+
+function step() {
+  let newWorld = JSON.parse(JSON.stringify(world));
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      // sand
+      if (world[y][x].material === 2 && y < canvas.height - 1) {
+        if (world[y + 1][x].material === 0) {
+          newWorld[y + 1][x] = materials[2];
+          newWorld[y][x] = materials[0];
+        }
+        else if (x < canvas.width - 1 && world[y + 1][x + 1].material === 0 && Math.random() > SAND_FRICTION) {
+          newWorld[y + 1][x + 1] = materials[2];
+          newWorld[y][x] = materials[0];
+        }
+        else if (x > 0 && world[y + 1][x - 1].material === 0 && Math.random() > SAND_FRICTION) {
+          newWorld[y + 1][x - 1] = materials[2];
+          newWorld[y][x] = materials[0];
+        }
+      }
+    }
+  }
+  world = JSON.parse(JSON.stringify(newWorld));
+}
+
+function draw() {
   // clear
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -72,12 +109,11 @@ function loop() {
       switch (world[y][x].material) {
         case 0: ctx.fillStyle = "white"; break;
         case 1: ctx.fillStyle = "black"; break;
+        case 2: ctx.fillStyle = "yellow"; break;
       }
       ctx.fillRect(x, y, 1, 1);
     }
   }
-  //endregion
-  requestAnimationFrame(loop);
 }
 
 canvas.addEventListener("mousemove", (e) => {
@@ -92,6 +128,3 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
   mouseButtonPressed = -1;
 });
-
-// start game
-requestAnimationFrame(loop);
