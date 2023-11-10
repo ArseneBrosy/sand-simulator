@@ -1,10 +1,10 @@
 // TEMPLATE
 // by Arsène Brosy
 let canvas = document.getElementById("game");
-let ctx = canvas.getContext("2d");
+let ctx = canvas.getContext("2d", { willReadFrequently: true });
 let fpsCounter = document.getElementById("fps");
-canvas.width = 300;
-canvas.height = 300;
+canvas.width = 100;
+canvas.height = 100;
 
 //region CONSTANTES
 const SAND_FRICTION = .9;
@@ -22,14 +22,14 @@ let penRadius = 10;
 let materials = [
   {
     material: 0,
-    tags: [],
+    tags: ["no-physics"],
     red: 255,
     green: 255,
     blue: 255
   },
   {
     material: 1,
-    tags: [],
+    tags: ["no-physics"],
     red: 0,
     green: 0,
     blue: 0
@@ -99,19 +99,30 @@ setInterval(() => {
 function step() {
   for (let y = 0; y < canvas.height; y++) {
     for (let x = 0; x < canvas.width; x++) {
-      // sand
-      if (world[y][x].material === 2 && y < canvas.height - 1) {
-        if (world[y + 1][x].material === 0) {
-          world[y + 1][x] = materials[2];
-          world[y][x] = materials[0];
-        }
-        else if (x < canvas.width - 1 && world[y + 1][x + 1].material === 0 && Math.random() > SAND_FRICTION) {
-          world[y + 1][x + 1] = materials[2];
-          world[y][x] = materials[0];
-        }
-        else if (x > 0 && world[y + 1][x - 1].material === 0 && Math.random() > SAND_FRICTION) {
-          world[y + 1][x - 1] = materials[2];
-          world[y][x] = materials[0];
+      if (world[y][x].tags.includes("tamp-no-physics")) {
+        world[y][x].tags.splice(world[y][x].tags.indexOf("tamp-no-physics"), 1);
+      }
+    }
+  }
+
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      if (!world[y][x].tags.includes("no-physics") && !world[y][x].tags.includes("tamp-no-physics")) {
+        // sand
+        if (world[y][x].material === 2 && y < canvas.height - 1) {
+          if (world[y + 1][x].material === 0) {
+            world[y + 1][x] = world[y][x];
+            world[y + 1][x].tags.push("tamp-no-physics");
+            world[y][x] = materials[0];
+          } else if (x < canvas.width - 1 && world[y + 1][x + 1].material === 0 && Math.random() > SAND_FRICTION) {
+            world[y + 1][x + 1] = world[y][x];
+            world[y + 1][x + 1].tags.push("tamp-no-physics");
+            world[y][x] = materials[0];
+          } else if (x > 0 && world[y + 1][x - 1].material === 0 && Math.random() > SAND_FRICTION) {
+            world[y + 1][x - 1] = world[y][x];
+            world[y + 1][x - 1].tags.push("tamp-no-physics");
+            world[y][x] = materials[0];
+          }
         }
       }
     }
