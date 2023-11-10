@@ -19,6 +19,7 @@ let canvasMouseY = 0;
 let mouseButtonPressed = -1;
 let penRadius = 10;
 
+let selectedMaterial = 2;
 let materials = [
   {
     material: 0,
@@ -37,9 +38,9 @@ let materials = [
   {
     material: 2,
     tags: [],
-    red: 170,
-    green: 144,
-    blue: 99
+    red: 223,
+    green: 183,
+    blue: 118
   }
 ];
 
@@ -76,7 +77,14 @@ setInterval(() => {
       for (let x = canvasMouseX - penRadius; x <= canvasMouseX + penRadius; x++) {
         for (let y = canvasMouseY - penRadius; y <= canvasMouseY + penRadius; y++) {
           try {
-            world[y][x] = materials[2];
+            world[y][x] = JSON.parse(JSON.stringify(materials[selectedMaterial]));
+            if (selectedMaterial === 2) {
+              let millis = new Date().getMilliseconds() / 1000;
+              let random = ((millis > .5 ? 1 - millis : millis) - .25) * 40;
+              world[y][x].red += random + (Math.random() - .5) * 10;
+              world[y][x].green += random + (Math.random() - .5) * 10;
+              world[y][x].blue += random + (Math.random() - .5) * 10;
+            }
           } catch {}
         }
       }
@@ -85,7 +93,13 @@ setInterval(() => {
       for (let x = canvasMouseX - penRadius; x <= canvasMouseX + penRadius; x++) {
         for (let y = canvasMouseY - penRadius; y <= canvasMouseY + penRadius; y++) {
           try {
-            world[y][x] = materials[0];
+            world[y][x] = {
+              material: 0,
+              tags: ["no-physics"],
+              red: 255,
+              green: 255,
+              blue: 255
+            }
           } catch {}
         }
       }
@@ -119,15 +133,33 @@ function step() {
           if (world[y + 1][x].material === 0) {
             world[y + 1][x] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x].tags.push("tamp-no-physics");
-            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
+            world[y][x] = {
+              material: 0,
+              tags: ["no-physics"],
+              red: 255,
+              green: 255,
+              blue: 255
+            };
           } else if (x < canvas.width - 1 && world[y + 1][x + 1].material === 0 && Math.random() > SAND_FRICTION) {
             world[y + 1][x + 1] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x + 1].tags.push("tamp-no-physics");
-            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
+            world[y][x] = {
+              material: 0,
+              tags: ["no-physics"],
+              red: 255,
+              green: 255,
+              blue: 255
+            };
           } else if (x > 0 && world[y + 1][x - 1].material === 0 && Math.random() > SAND_FRICTION) {
             world[y + 1][x - 1] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x - 1].tags.push("tamp-no-physics");
-            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
+            world[y][x] = {
+              material: 0,
+              tags: ["no-physics"],
+              red: 255,
+              green: 255,
+              blue: 255
+            };
           }
         }
       }
