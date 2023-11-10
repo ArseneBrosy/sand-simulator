@@ -3,8 +3,8 @@
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d", { willReadFrequently: true });
 let fpsCounter = document.getElementById("fps");
-canvas.width = 100;
-canvas.height = 100;
+canvas.width = 300;
+canvas.height = 300;
 
 //region CONSTANTES
 const SAND_FRICTION = .9;
@@ -37,9 +37,9 @@ let materials = [
   {
     material: 2,
     tags: [],
-    red: 255,
-    green: 255,
-    blue: 0
+    red: 170,
+    green: 144,
+    blue: 99
   }
 ];
 
@@ -48,7 +48,13 @@ let world = [];
 for (let y = 0; y < canvas.height; y++) {
   let newLine = [];
   for (let x = 0; x < canvas.width; x++) {
-    newLine.push(materials[0]);
+    newLine.push({
+      material: 0,
+      tags: ["no-physics"],
+      red: 255,
+      green: 255,
+      blue: 255
+    });
   }
   world.push(newLine);
 }
@@ -111,17 +117,17 @@ function step() {
         // sand
         if (world[y][x].material === 2 && y < canvas.height - 1) {
           if (world[y + 1][x].material === 0) {
-            world[y + 1][x] = world[y][x];
+            world[y + 1][x] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x].tags.push("tamp-no-physics");
-            world[y][x] = materials[0];
+            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
           } else if (x < canvas.width - 1 && world[y + 1][x + 1].material === 0 && Math.random() > SAND_FRICTION) {
-            world[y + 1][x + 1] = world[y][x];
+            world[y + 1][x + 1] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x + 1].tags.push("tamp-no-physics");
-            world[y][x] = materials[0];
+            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
           } else if (x > 0 && world[y + 1][x - 1].material === 0 && Math.random() > SAND_FRICTION) {
-            world[y + 1][x - 1] = world[y][x];
+            world[y + 1][x - 1] = JSON.parse(JSON.stringify(world[y][x]));
             world[y + 1][x - 1].tags.push("tamp-no-physics");
-            world[y][x] = materials[0];
+            world[y][x] = JSON.parse(JSON.stringify(materials[0]));
           }
         }
       }
