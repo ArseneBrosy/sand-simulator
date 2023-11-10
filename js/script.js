@@ -7,7 +7,7 @@ canvas.width = 300;
 canvas.height = 300;
 
 //region CONSTANTES
-const SAND_FRICTION = .9;
+const SAND_FRICTION = .6;
 //endregion
 
 //region VARIABLES

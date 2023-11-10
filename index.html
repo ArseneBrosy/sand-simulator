@@ -9,8 +9,26 @@
 </head>
 <body oncontextmenu="return false;">
 <canvas id="game"></canvas>
-<p id="fps">60</p>
+<div id="ui">
+    <p>FPS: <span id="fps">60</span></p>
+</div>
+<div id="sidebar">
+    <h1>Sand simulator</h1>
+    <p>By Arsène Brosy</p>
+    <div id="separator"></div>
+    <button>Wall</button>
+    <button class="selected">Sand</button>
+    <button>Water</button>
+</div>
 <!--MAIN SCRIPT-->
 <script src="./js/script.js"></script>
+
+<script type="module">
+    const canvas = document.getElementById("game");
+    const ui = document.getElementById("ui");
+
+    ui.style.height = canvas.clientHeight + "px";
+    ui.style.left = (canvas.offsetLeft + 1) + "px";
+</script>
 </body>
 </html>
